@@ -2,4 +2,4 @@
 Intergrated model of Mask R-CNN and DeepSORT
 # Note
 * GPU running is slower than CPU running
-* If the `tensorflow-gpu` package is installed then uninstalled, the error is occured
+* If the `tensorflow-gpu` package is installed and then uninstalled, the error is occured
