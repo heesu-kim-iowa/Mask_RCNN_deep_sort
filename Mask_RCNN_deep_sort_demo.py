@@ -172,6 +172,8 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
         detections = [d for d in detections if d.confidence >= min_confidence]
 
         # Run non-maxima suppression.
+        # Load the result of bounding box generated from Mask R-CNN
+        # boxes = np.load('./Mask_RCNN/samples/Mask_RCNN_bbox_result.npy')
         boxes = np.array([d.tlwh for d in detections])
         scores = np.array([d.confidence for d in detections])
         indices = preprocessing.non_max_suppression(

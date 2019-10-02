@@ -79,3 +79,10 @@ results = model.detect([image], verbose=1)
 r = results[0]
 visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'],
                             class_names, r['scores'])
+
+# Store the result of bounding box as .txt
+# f = open("./Mask_RCNN_result.txt", 'w')
+# for row in r['rois']:
+#     print('%d,%d,%d,%d' % (row[0], row[1], row[2], row[3]), file=f)
+# f.close()
+np.save('Mask_RCNN_bbox_result', r['rois'])
