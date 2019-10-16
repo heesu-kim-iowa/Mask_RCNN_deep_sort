@@ -5,7 +5,7 @@ import argparse
 import numpy as np
 import cv2
 import tensorflow as tf
-
+import time
 
 def _run_in_batches(f, data_dict, out, batch_size):
     data_len = len(out)
@@ -149,21 +149,23 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
         print("Processing %s" % sequence)
         sequence_dir = os.path.join(mot_dir, sequence)
 
-        image_dir = os.path.join(sequence_dir, "img1")
+        image_dir = os.path.join(mot_dir, "images")
+        # image_dir = mot_dir
         image_filenames = {
             int(os.path.splitext(f)[0]): os.path.join(image_dir, f)
             for f in os.listdir(image_dir)}
 
         detection_file = os.path.join(
-            detection_dir, sequence, "det/det.txt")
+            detection_dir, "det/det.txt")
         detections_in = np.loadtxt(detection_file, delimiter=',')
         detections_out = []
 
         frame_indices = detections_in[:, 0].astype(np.int)
         min_frame_idx = frame_indices.astype(np.int).min()
         max_frame_idx = frame_indices.astype(np.int).max()
+        start = time.time()
         for frame_idx in range(min_frame_idx, max_frame_idx + 1):
-            print("Frame %05d/%05d" % (frame_idx, max_frame_idx))
+            print("============= Frame %05d/%05d ============= (Working time: %.2f sec)" % (frame_idx, max_frame_idx, time.time() - start))
             mask = frame_indices == frame_idx
             rows = detections_in[mask]
 
@@ -211,7 +213,7 @@ def parse_args():
 def main():
     # args = parse_args()
     encoder = create_box_encoder("D:/dev/python/Mask_RCNN_deep_sort/deep_sort/resources/networks/mars-small128.pb", batch_size=32)
-    generate_detections(encoder, "D:/dev/python/Mask_RCNN_deep_sort/deep_sort/MOT16/train", "D:/dev/python/Mask_RCNN_deep_sort/deep_sort/resources/detections/MOT16_train")
+    generate_detections(encoder, "D:/dev/python/Mask_RCNN_deep_sort/source", "D:/dev/python/Mask_RCNN_deep_sort/source/feat")
 
 
 if __name__ == "__main__":

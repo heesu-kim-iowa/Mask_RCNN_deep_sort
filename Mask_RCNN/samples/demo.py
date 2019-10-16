@@ -6,6 +6,7 @@ import numpy as np
 import skimage.io
 import matplotlib
 import matplotlib.pyplot as plt
+import time
 
 # Root directory of the project
 ROOT_DIR = os.path.abspath("../")
@@ -15,6 +16,7 @@ sys.path.append(ROOT_DIR)  # To find local version of the library
 from mrcnn import utils
 import mrcnn.model as modellib
 from mrcnn import visualize
+
 # Import COCO config
 sys.path.append(os.path.join(ROOT_DIR, "samples/coco/"))  # To find local version
 import coco
@@ -31,13 +33,15 @@ if not os.path.exists(COCO_MODEL_PATH):
     utils.download_trained_weights(COCO_MODEL_PATH)
 
 # Directory of images to run detection on
-IMAGE_DIR = os.path.join(ROOT_DIR, "images")
+IMAGE_DIR = os.path.abspath("../../source/images")
+
 
 class InferenceConfig(coco.CocoConfig):
     # Set batch size to 1 since we'll be running inference on
     # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
     GPU_COUNT = 1
     IMAGES_PER_GPU = 1
+
 
 config = InferenceConfig()
 config.display()
@@ -68,25 +72,32 @@ class_names = ['BG', 'person', 'bicycle', 'car', 'motorcycle', 'airplane',
                'teddy bear', 'hair drier', 'toothbrush']
 
 r = []
-for for for for for for       :
-    # Load a random image from the images folder
-    file_names = next(os.walk(IMAGE_DIR))[2]
-    # image = skimage.io.imread(os.path.join(IMAGE_DIR, random.choice(file_names)))
-    image = skimage.io.imread(os.path.join(IMAGE_DIR, '2502287818_41e4b0c4fb_z.jpg'))
+file_names = next(os.walk(IMAGE_DIR))[2]
+start = time.time()
+for fileIdx in file_names:
+    print("================ Processing %s ================ (Working time: %.2f sec)" % (fileIdx, time.time() - start))
+    # Load a image from the images folder
+    image = skimage.io.imread(os.path.join(IMAGE_DIR, fileIdx))
 
     # Run detection
     results = model.detect([image], verbose=1)
 
     # Visualize results
-    r = results[0] #appendappendappendappendappendappend
-    visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'],
-                                class_names, r['scores'])
+    r.append(results[0])
+    # visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'],
+    #                             class_names, r['scores'])
 
 # Store the result of frame id, bounding box, scores as .txt
-f = open("./Mask_RCNN_result.txt", 'w')
-for rowRois, rowScores in zip(r['rois'], r['scores']):
-    # Convert {(x1,y1), (x2,y2)} coord. to {(x,y), w, h} coord.
-    print('-1,%.2f,%.2f,%.2f,%.2f,%.2f,-1,-1,-1' % (rowRois[1], rowRois[0], rowRois[3]-rowRois[1], rowRois[2]-rowRois[0],
-                                                    rowScores), file=f)
+f = open("../../source/det/det.txt", 'w')
+frameIdx = 0
+while frameIdx < len(r):
+
+    for rowRois, rowScores in zip(r[frameIdx]['rois'], r[frameIdx]['scores']):
+        # Convert {(x1,y1), (x2,y2)} coord. to {(x,y), w, h} coord. and write the coord. and scores
+        print('%d,-1,%.2f,%.2f,%.2f,%.2f,%.2f,-1,-1,-1' % (frameIdx,
+                                                           rowRois[1], rowRois[0],
+                                                           rowRois[3] - rowRois[1], rowRois[2] - rowRois[0],
+                                                           rowScores), file=f)
+    frameIdx += 1
 f.close()
 # np.save('Mask_RCNN_bbox_result', r['rois'])
