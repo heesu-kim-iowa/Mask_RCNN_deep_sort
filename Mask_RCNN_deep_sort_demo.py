@@ -267,6 +267,6 @@ def parse_args():
 if __name__ == "__main__":
     # args = parse_args()
     run(
-        "./deep_sort/MOT16/test/MOT16-06", "./deep_sort/resources/detections/MOT16_POI_test/MOT16-06.npy", "result.txt",
+        "./deep_sort/MOT16/test/MOT16-07", "./deep_sort/resources/detections/MOT16_POI_test/MOT16-07.npy", "result.txt",
         0.3, 1.0, 0,
         0.2, 100, True)

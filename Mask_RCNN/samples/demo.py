@@ -67,22 +67,26 @@ class_names = ['BG', 'person', 'bicycle', 'car', 'motorcycle', 'airplane',
                'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors',
                'teddy bear', 'hair drier', 'toothbrush']
 
-# Load a random image from the images folder
-file_names = next(os.walk(IMAGE_DIR))[2]
-# image = skimage.io.imread(os.path.join(IMAGE_DIR, random.choice(file_names)))
-image = skimage.io.imread(os.path.join(IMAGE_DIR, '2502287818_41e4b0c4fb_z.jpg'))
+r = []
+for for for for for for       :
+    # Load a random image from the images folder
+    file_names = next(os.walk(IMAGE_DIR))[2]
+    # image = skimage.io.imread(os.path.join(IMAGE_DIR, random.choice(file_names)))
+    image = skimage.io.imread(os.path.join(IMAGE_DIR, '2502287818_41e4b0c4fb_z.jpg'))
 
-# Run detection
-results = model.detect([image], verbose=1)
+    # Run detection
+    results = model.detect([image], verbose=1)
 
-# Visualize results
-r = results[0]
-visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'],
-                            class_names, r['scores'])
+    # Visualize results
+    r = results[0] #appendappendappendappendappendappend
+    visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'],
+                                class_names, r['scores'])
 
-# Store the result of bounding box as .txt
-# f = open("./Mask_RCNN_result.txt", 'w')
-# for row in r['rois']:
-#     print('%d,%d,%d,%d' % (row[0], row[1], row[2], row[3]), file=f)
-# f.close()
-np.save('Mask_RCNN_bbox_result', r['rois'])
+# Store the result of frame id, bounding box, scores as .txt
+f = open("./Mask_RCNN_result.txt", 'w')
+for rowRois, rowScores in zip(r['rois'], r['scores']):
+    # Convert {(x1,y1), (x2,y2)} coord. to {(x,y), w, h} coord.
+    print('-1,%.2f,%.2f,%.2f,%.2f,%.2f,-1,-1,-1' % (rowRois[1], rowRois[0], rowRois[3]-rowRois[1], rowRois[2]-rowRois[0],
+                                                    rowScores), file=f)
+f.close()
+# np.save('Mask_RCNN_bbox_result', r['rois'])

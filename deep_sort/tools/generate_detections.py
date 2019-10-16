@@ -202,11 +202,16 @@ def parse_args():
     return parser.parse_args()
 
 
+# def main():
+#     args = parse_args()
+#     encoder = create_box_encoder(args.model, batch_size=32)
+#     generate_detections(encoder, args.mot_dir, args.output_dir,
+#                         args.detection_dir)
+
 def main():
-    args = parse_args()
-    encoder = create_box_encoder(args.model, batch_size=32)
-    generate_detections(encoder, args.mot_dir, args.output_dir,
-                        args.detection_dir)
+    # args = parse_args()
+    encoder = create_box_encoder("D:/dev/python/Mask_RCNN_deep_sort/deep_sort/resources/networks/mars-small128.pb", batch_size=32)
+    generate_detections(encoder, "D:/dev/python/Mask_RCNN_deep_sort/deep_sort/MOT16/train", "D:/dev/python/Mask_RCNN_deep_sort/deep_sort/resources/detections/MOT16_train")
 
 
 if __name__ == "__main__":
